@@ -33,6 +33,30 @@ Este repositorio contiene la configuración y evidencias del despliegue seguro y
 * [cite_start]Se lanzó una instancia EC2 y se configuró un **Security Group** para permitir tráfico SSH (22), HTTP (80), HTTPS (443) y Grafana (3000). [cite: 15]
 * [cite_start]Se instaló Docker y se ejecutó la aplicación usando Docker Compose[cite: 16].
 ---
+### 1.3. Estado Final y Estrategia de Despliegue
+La solución implementada cumple con todos los requisitos del examen, superando el principal desafío de saturación de recursos de la instancia t3.micro.
+
+Validación Funcional (Staging): Para garantizar la estabilidad de la validación, se utilizó una estrategia de Estacionamiento (Staging), ejecutando la aplicación (Partes I/II) y el Monitoreo (Partes III/IV) por separado, ya que la capacidad de la t3.micro no permite correr los seis servicios principales simultáneamente de forma estable.
+
+** IP Pública de la EC2 (Lab Actual): 35.172.184.223
+**IP Privada de la EC2 (Conexión de Monitoreo): 172.31.26.79
+
+🎯 Parte I y II: Empaquetado y Despliegue en AWS EC2 (HTTPS y Funcionalidad)
+
+El despliegue consistió en una arquitectura de 3 contenedores (Nginx, Flask App, MySQL DB) orquestados por Docker Compose.
+| Requisito | Descripción y solución | Archivo / Comando Clave |
+| :--- | :--- | :--- |
+| HTTPS y Redirección | Nginx se configuró como reverse proxy en el puerto 443 con certificados auto-firmados (en ssl/). Se implementó una regla de redirección para forzar HTTP (80) -> HTTPS (443). | nginx.conf |
+| `Dockerfile` | Instrucciones para construir la imagen. | |
+| `docker-compose.yml` | Define el servicio `webapp` y mapea los puertos. | |
+| `nginx.conf (docker)` | Configuración de Nginx (SSL, redirección 80->443). | |
+| Configuración de métricas y visualización. | Parte 3 y 4 | |
+| `prometheus.yml` | Configuración de los jobs de Node Exporter y Prometheus. | |
+| `alert.rules.yml` | Definición de alertas (ej. CPU > 80%). | 
+| `dashboard_cpu_disk.json` | Exportación del dashboard custom (CPU/Memoria/Disco). | |
+| **`README.md`** | Este archivo, documentación y conclusiones. | |
+
+---
 ## 2. Archivos del Repositorio
 
 | Directorio / Archivo | Descripción | a |
