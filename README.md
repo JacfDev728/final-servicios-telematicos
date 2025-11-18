@@ -22,14 +22,33 @@ Este repositorio contiene la configuración y evidencias del despliegue seguro y
 
 ## 1. Estructura del Proyecto
 
-* **`docker/`**: Contiene el `Dockerfile`, `docker-compose.yml`, `nginx.conf`, y los certificados SSL autofirmados (`app.crt`, `app.key`).
-* **`monitoring/`**: Contiene `prometheus.yml`, `alert.rules.yml` y las definiciones de los dashboards de Grafana (archivos `.json`).
-* **`scripts/`**: Archivos de configuración de servicios (`node-exporter.service`, etc.).
-* **`EVIDENCIAS.md`**: Capturas de pantalla del despliegue (acceso HTTPS, Grafana).
+* Contiene el `Dockerfile`, `docker-compose.yml`, `nginx.conf`, y los certificados SSL autofirmados (`app.crt`, `app.key`).
+* Contiene `prometheus.yml`, `alert.rules.yml` y las definiciones de los dashboards de Grafana (archivos `.json`).
+* Archivos de configuración de servicios (`node-exporter.service`, etc.).
+* Capturas de pantalla del despliegue (acceso HTTPS, Grafana).
 
 ---
+### 1.2. Despliegue en la Nube (AWS EC2)
 
-## 2. Conclusión Técnica (Respuesta a Preguntas)
+* [cite_start]Se lanzó una instancia EC2 y se configuró un **Security Group** para permitir tráfico SSH (22), HTTP (80), HTTPS (443) y Grafana (3000). [cite: 15]
+* [cite_start]Se instaló Docker y se ejecutó la aplicación usando Docker Compose[cite: 16].
+---
+## 2. Archivos del Repositorio
+
+| Directorio / Archivo | Descripción | Uso en el Taller |
+| :--- | :--- | :--- |
+| Configuración de Nginx y orquestación. | Parte 1 y 2 |
+| `Dockerfile` | Instrucciones para construir la imagen. | |
+| `docker-compose.yml` | Define el servicio `webapp` y mapea los puertos. | |
+| `nginx.conf (docker)` | Configuración de Nginx (SSL, redirección 80->443). | |
+| Configuración de métricas y visualización. | Parte 3 y 4 |
+| `prometheus.yml` | Configuración de los jobs de Node Exporter y Prometheus. | |
+| `alert.rules.yml` | Definición de alertas (ej. CPU > 80%). | |
+| `dashboard_cpu_disk.json` | Exportación del dashboard custom (CPU/Memoria/Disco). | |
+| **`README.md`** | Este archivo, documentación y conclusiones. | |
+---
+
+## 3. Conclusión Técnica (Respuesta a Preguntas)
 
 ### • ¿Qué aprendió al integrar Docker, AWS y Prometheus?
 
@@ -45,5 +64,5 @@ La observabilidad (a través de Prometheus y Grafana) permite a los equipos **De
 
 ---
 
-## 3. Evidencias de Despliegue
-
+## 4. Evidencias de Despliegue
+* https://www.notion.so/final-servicios-telematicos-2af686ab5be58022a6b1d0030f59d755?source=copy_link
