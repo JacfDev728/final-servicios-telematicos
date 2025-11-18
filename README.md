@@ -47,14 +47,13 @@ El despliegue consistió en una arquitectura de 3 contenedores (Nginx, Flask App
 | Requisito | Descripción y solución | Archivo / Comando Clave |
 | :--- | :--- | :--- |
 | HTTPS y Redirección | Nginx se configuró como reverse proxy en el puerto 443 con certificados auto-firmados (en ssl/). Se implementó una regla de redirección para forzar HTTP (80) -> HTTPS (443). | nginx.conf |
-| `Dockerfile` | Instrucciones para construir la imagen. | |
-| `docker-compose.yml` | Define el servicio `webapp` y mapea los puertos. | |
-| `nginx.conf (docker)` | Configuración de Nginx (SSL, redirección 80->443). | |
-| Configuración de métricas y visualización. | Parte 3 y 4 | |
-| `prometheus.yml` | Configuración de los jobs de Node Exporter y Prometheus. | |
-| `alert.rules.yml` | Definición de alertas (ej. CPU > 80%). | 
-| `dashboard_cpu_disk.json` | Exportación del dashboard custom (CPU/Memoria/Disco). | |
-| **`README.md`** | Este archivo, documentación y conclusiones. | |
+| Conexión DB | Problema: La aplicación Flask no encontraba la DB, devolviendo un error 500 (Can't connect to local server through socket...). Solución 1: Se cambió el host de DB de 'localhost' al nombre del servicio Docker 'db'. Solución 2 (Final): Se agregó explícitamente el puerto :3306 en la cadena de conexión para forzar el protocolo TCP/IP y evitar que Python buscara el archivo de socket. | webapp/config.py |
+| Inicialización de Tablas | Problema: El script init.sql fallaba al inicio de MySQL, dejando la tabla users vacía (Empty set). Solución: Se forzó la creación manual de la tabla users para que la aplicación Flask pudiera realizar el POST y db.session.commit(). | exec... < init.sql |
+| Comando Final de Despliegue | Se utilizó docker compose (sintaxis moderna) para construir la imagen con la corrección de config.py y desplegar los servicios. | docker compose up --build -d  |
+
+🎯 Parte III: Monitoreo con Prometheus y Node Exporter
+
+Los servicios de monitoreo se instalaron y se ejecutaron directamente en el host EC2 como servicios de systemd para reducir la complejidad de la red Docker.
 
 ---
 ## 2. Archivos del Repositorio
