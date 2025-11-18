@@ -37,15 +37,15 @@ Este repositorio contiene la configuración y evidencias del despliegue seguro y
 
 | Directorio / Archivo | Descripción |
 | :--- | :--- | :--- |
-| Configuración de Nginx y orquestación. | Parte 1 y 2 |
-| `Dockerfile` | Instrucciones para construir la imagen. |
-| `docker-compose.yml` | Define el servicio `webapp` y mapea los puertos. |
-| `nginx.conf (docker)` | Configuración de Nginx (SSL, redirección 80->443). |
-| Configuración de métricas y visualización. | Parte 3 y 4 |
-| `prometheus.yml` | Configuración de los jobs de Node Exporter y Prometheus. |
-| `alert.rules.yml` | Definición de alertas (ej. CPU > 80%). |
-| `dashboard_cpu_disk.json` | Exportación del dashboard custom (CPU/Memoria/Disco). |
-| **`README.md`** | Este archivo, documentación y conclusiones. |
+| Configuración de Nginx y orquestación. | Parte 1 y 2 | 
+| `Dockerfile` | Instrucciones para construir la imagen. | 
+| `docker-compose.yml` | Define el servicio `webapp` y mapea los puertos. | 
+| `nginx.conf (docker)` | Configuración de Nginx (SSL, redirección 80->443). | 
+| Configuración de métricas y visualización. | Parte 3 y 4 | 
+| `prometheus.yml` | Configuración de los jobs de Node Exporter y Prometheus. | 
+| `alert.rules.yml` | Definición de alertas (ej. CPU > 80%). | 
+| `dashboard_cpu_disk.json` | Exportación del dashboard custom (CPU/Memoria/Disco). | 
+| **`README.md`** | Este archivo, documentación y conclusiones. | 
 ---
 
 ## 3. Conclusión Técnica (Respuesta a Preguntas)
