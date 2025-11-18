@@ -35,8 +35,8 @@ Este repositorio contiene la configuración y evidencias del despliegue seguro y
 ---
 ## 2. Archivos del Repositorio
 
-| Directorio / Archivo | Descripción | |
-| :--- | :--- | :--- | |
+| Directorio / Archivo | Descripción | a |
+| :--- | :--- | :--- |
 | Configuración de Nginx y orquestación. | Parte 1 y 2 | |
 | `Dockerfile` | Instrucciones para construir la imagen. | |
 | `docker-compose.yml` | Define el servicio `webapp` y mapea los puertos. | |
