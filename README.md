@@ -54,7 +54,18 @@ El despliegue consistió en una arquitectura de 3 contenedores (Nginx, Flask App
 🎯 Parte III: Monitoreo con Prometheus y Node Exporter
 
 Los servicios de monitoreo se instalaron y se ejecutaron directamente en el host EC2 como servicios de systemd para reducir la complejidad de la red Docker.
+| Requisito | Descripción y solución | Archivo / Comando Clave |
+| :--- | :--- | :--- |
+| Instalación | Instalación de binarios y configuración de usuarios (prometheus, node_exporter). Se crearon los archivos .service y se habilitaron con sudo systemctl enable. | prometheus.service & node_exporter.service |
+| Configuración | Se configuró prometheus.yml para recolectar métricas del propio Prometheus y del Node Exporter en el host. | prometheus.yml (Targets: localhost:9090 y localhost:9100) |
+| Validación | Se verificó que ambas metas estén en estado UP accediendo a la UI de Prometheus. | http://35.172.184.223:9090/targets |
 
+🎯 Parte IV: Visualización con Grafana
+| Requisito | Descripción y solución | Archivo / Comando Clave |
+| :--- | :--- | :--- |
+| Instalación | Grafana se desplegó en un contenedor Docker separado. | docker run -d --name=grafana -p 3000:3000 grafana/grafana:latest |
+| Conexión a Prometheus | Problema: Al usar localhost o 127.0.0.1, Grafana no podía ver a Prometheus (error connection refused). Solución: Se configuró la fuente de datos para apuntar a la IP privada del host EC2 para que el contenedor pueda acceder al servicio systemd en la red de AWS. | http://172.31.26.79:9090 |
+| Dashboards | Se importó el panel preconfigurado ID 1860 (Node Exporter Full) y se crearon paneles adicionales para validar el requisito. | Dashboards creados y ID 1860 importado. |
 ---
 ## 2. Archivos del Repositorio
 
@@ -75,15 +86,15 @@ Los servicios de monitoreo se instalaron y se ejecutaron directamente en el host
 
 ### • ¿Qué aprendió al integrar Docker, AWS y Prometheus?
 
-Aprendí a construir un **ciclo de vida de despliegue inmutable**. Docker garantiza que el entorno de la aplicación es idéntico tanto localmente como en la nube (AWS), eliminando la dependencia de la infraestructura subyacente. La integración de Prometheus me enseñó la importancia de la **recolección de métricas** desde el inicio para garantizar la salud del servicio y planificar la capacidad.
+Aprendí a crear un **Pipeline DevOps** modular donde **la portabilidad de Docker** y la **escalabilidad de AWS** se combinan con la observabilidad en tiempo real de Prometheus y Grafana. El principal aprendizaje fue que el diseño de la arquitectura (monitoreo como servicio sidecar en contenedores o como servicio de host) es fundamental para gestionar los recursos en entornos de infraestructura limitada.
 
 ### • ¿Qué fue lo más desafiante y cómo lo resolvería en un entorno real?
 
-Lo más desafiante fue la gestión de la **configuración de red y seguridad (SSL/TLS)** entre Docker, Nginx y las Reglas de Seguridad de AWS (Security Groups). En un entorno real, esto se resolvería utilizando un **Load Balancer (ELB/ALB)** de AWS para manejar la terminación SSL/TLS y delegar el tráfico seguro a los contenedores internos. También se usaría **Terraform** para gestionar la infraestructura de AWS como código (IaC), asegurando que las reglas de seguridad sean siempre correctas.
+El mayor desafío fue la **saturación constante de la instancia t3.micro** al intentar correr la aplicación web y el monitoreo juntos, lo que obligó a usar una estrategia de Estacionamiento (Staging). En un entorno real, esto se resuelve con un **diseño de microservicios distribuido**, donde Prometheus y Grafana correrían en una **instancia separada** (o un servicio gestionado de AWS como ECS/EKS y CloudWatch) para aislar la carga y garantizar la estabilidad de la aplicación crítica.
 
 ### • ¿Qué beneficio aporta la observabilidad en el ciclo DevOps?
 
-La observabilidad (a través de Prometheus y Grafana) permite a los equipos **DevOps** pasar de la simple monitorización reactiva a un enfoque proactivo. Al centralizar métricas, *logs* y *traces*, se reduce drásticamente el **Tiempo Medio de Resolución (MTTR)** de los incidentes. Permite a los desarrolladores y operadores entender rápidamente qué está fallando (el por qué) y no solo cuándo falló (el qué), acelerando la entrega de valor de forma segura y fiable.
+La observabilidad, facilitada por Prometheus y Grafana, aporta el beneficio de la detección proactiva de fallas y la **reducción del tiempo de resolución (MTTR)**. Permite obtener métricas en tiempo real sobre el rendimiento (CPU, RAM, latencia de la aplicación), guiando las decisiones de **escalabilidad, optimización de código y la validación automática de nuevos despliegues**.
 
 ---
 
