@@ -1,0 +1,55 @@
+version: "3.8"
+services:
+  # --------------------
+  # 1. SERVICIO DATABASE (MySQL)
+  # --------------------
+  db:
+    image: mysql:8.0
+    container_name: miniapp_db
+    environment:
+      # CRITICO: Coincidir con la configuracion en config.py
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: webapp_db
+    volumes:
+      # Montar el script de inicializacion SQL
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    expose:
+      - "3306" # Solo accesible internamente
+    restart: always
+
+  # --------------------
+  # 2. SERVICIO FLASK APP
+  # --------------------
+  app:
+    build: . # Usa el Dockerfile que acabamos de crear
+    container_name: miniapp_app
+    environment:
+      # Variables usadas por la app para conectarse a la DB
+      DATABASE_HOST: db
+      DATABASE_NAME: webapp_db
+      DATABASE_USER: root
+      DATABASE_PASSWORD: root
+    expose:
+      - "5000"
+    depends_on:
+      - db
+    restart: always
+
+  # --------------------
+  # 3. SERVICIO REVERSE PROXY / HTTPS (NGINX)
+  # --------------------
+  nginx:
+    image: nginx:latest
+    container_name: miniapp_nginx
+    ports:
+      # Mapear puertos externos (Host) a internos (Contenedor Nginx)
+      - "8080:80"     # HTTP
+      - "443:443"   # HTTPS (Requisito: Acceso a través del firewall)
+    volumes:
+      # Montar la configuracion de Nginx
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      # Montar los certificados SSL
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - app # Esperar a que la app esté corriendo
+    restart: always
